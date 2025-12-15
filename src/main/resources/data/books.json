@@ -26,5 +26,12 @@
     "author": "F. Scott Fitzgerald",
     "genre": "Classic",
     "pages": 180
+  },
+  {
+    "isbn": "9780743377555",
+    "title": "The Great Solution",
+    "author": "MySelf",
+    "genre": "Unbalanced",
+    "pages": 1800
   }
 ]
