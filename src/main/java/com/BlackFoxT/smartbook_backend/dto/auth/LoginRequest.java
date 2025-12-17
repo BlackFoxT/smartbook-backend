@@ -1,0 +1,10 @@
+package com.BlackFoxT.smartbook_backend.dto.auth;
+
+import lombok.Getter;
+
+@Getter
+public class LoginRequest {
+
+    private String username;
+    private String password;
+}
