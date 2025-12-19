@@ -3,6 +3,7 @@ package com.BlackFoxT.smartbook_backend.service;
 import com.BlackFoxT.smartbook_backend.dto.auth.AuthResponse;
 import com.BlackFoxT.smartbook_backend.dto.auth.LoginRequest;
 import com.BlackFoxT.smartbook_backend.dto.auth.RegisterRequest;
+import com.BlackFoxT.smartbook_backend.exception.*;
 import com.BlackFoxT.smartbook_backend.model.User;
 import com.BlackFoxT.smartbook_backend.model.enums.Role;
 import com.BlackFoxT.smartbook_backend.repository.UserRepository;
@@ -25,11 +26,11 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponse register(RegisterRequest request) {
 
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new RuntimeException("Username already exists");
+            throw new UserAlreadyExistsException("Username");
         }
 
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already exists");
+            throw new UserAlreadyExistsException("Email");
         }
 
         User user = new User(
@@ -41,7 +42,6 @@ public class AuthServiceImpl implements AuthService {
         );
 
         userRepository.save(user);
-
         return new AuthResponse("User registered successfully");
     }
 
@@ -49,12 +49,13 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponse login(LoginRequest request) {
 
         User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(UserNotFoundException::new);
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid password");
+            throw new InvalidCredentialsException();
         }
 
         return new AuthResponse("Login successful");
     }
+
 }

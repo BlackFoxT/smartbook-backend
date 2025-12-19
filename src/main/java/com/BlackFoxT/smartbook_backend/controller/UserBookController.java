@@ -1,7 +1,7 @@
 package com.BlackFoxT.smartbook_backend.controller;
 
+import com.BlackFoxT.smartbook_backend.dto.library.UserBookResponse;
 import com.BlackFoxT.smartbook_backend.model.User;
-import com.BlackFoxT.smartbook_backend.model.UserBook;
 import com.BlackFoxT.smartbook_backend.model.enums.ReadingStatus;
 import com.BlackFoxT.smartbook_backend.service.UserBookService;
 import org.springframework.web.bind.annotation.*;
@@ -27,17 +27,17 @@ public class UserBookController {
     }
 
     @GetMapping
-    public List<UserBook> getMyLibrary() {
+    public List<UserBookResponse> getMyLibrary() {
         return userBookService.getUserLibrary(mockUser());
     }
 
     @PostMapping("/{isbn}")
-    public UserBook addBook(@PathVariable String isbn) {
+    public UserBookResponse addBook(@PathVariable String isbn) {
         return userBookService.addBookToLibrary(mockUser(), isbn);
     }
 
     @PutMapping("/{isbn}/status")
-    public UserBook updateStatus(
+    public UserBookResponse updateStatus(
             @PathVariable String isbn,
             @RequestParam ReadingStatus status
     ) {
@@ -45,7 +45,7 @@ public class UserBookController {
     }
 
     @PutMapping("/{isbn}/rating")
-    public UserBook rateBook(
+    public UserBookResponse rateBook(
             @PathVariable String isbn,
             @RequestParam int rating
     ) {

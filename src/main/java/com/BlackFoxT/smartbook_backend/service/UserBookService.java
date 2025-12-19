@@ -1,6 +1,7 @@
 package com.BlackFoxT.smartbook_backend.service;
 
-import com.BlackFoxT.smartbook_backend.exception.BookNotFoundException;
+import com.BlackFoxT.smartbook_backend.dto.library.UserBookResponse;
+import com.BlackFoxT.smartbook_backend.exception.*;
 import com.BlackFoxT.smartbook_backend.model.Book;
 import com.BlackFoxT.smartbook_backend.model.User;
 import com.BlackFoxT.smartbook_backend.model.UserBook;
@@ -10,6 +11,7 @@ import com.BlackFoxT.smartbook_backend.repository.UserBookRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserBookService {
@@ -23,17 +25,22 @@ public class UserBookService {
         this.bookRepository = bookRepository;
     }
 
-    public List<UserBook> getUserLibrary(User user) {
-        return userBookRepository.findByUser(user);
+
+    public List<UserBookResponse> getUserLibrary(User user) {
+        return userBookRepository.findByUser(user)
+                .stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
     }
 
-    public UserBook addBookToLibrary(User user, String isbn) {
+
+    public UserBookResponse addBookToLibrary(User user, String isbn) {
 
         Book book = bookRepository.findByIsbn(isbn)
                 .orElseThrow(() -> new BookNotFoundException(isbn));
 
         if (userBookRepository.existsByUserAndBook(user, book)) {
-            throw new IllegalStateException("Book already in user's library");
+            throw new BookAlreadyInLibraryException();
         }
 
         UserBook userBook = UserBook.builder()
@@ -42,35 +49,29 @@ public class UserBookService {
                 .status(ReadingStatus.WANT_TO_READ)
                 .build();
 
-        return userBookRepository.save(userBook);
+        return toResponse(userBookRepository.save(userBook));
     }
 
-    public UserBook updateStatus(User user, String isbn, ReadingStatus status) {
+
+    public UserBookResponse updateStatus(User user, String isbn, ReadingStatus status) {
 
         Book book = bookRepository.findByIsbn(isbn)
                 .orElseThrow(() -> new BookNotFoundException(isbn));
 
         UserBook userBook = userBookRepository
                 .findByUserAndBook(user, book)
-                .orElseThrow(() -> new IllegalStateException("Book not in library"));
+                .orElseThrow(BookNotInLibraryException::new);
 
-        userBook = UserBook.builder()
-                .id(userBook.getId())
-                .user(user)
-                .book(book)
-                .status(status)
-                .rating(userBook.getRating())
-                .review(userBook.getReview())
-                .addedAt(userBook.getAddedAt())
-                .build();
+        userBook.setStatus(status);
 
-        return userBookRepository.save(userBook);
+        return toResponse(userBookRepository.save(userBook));
     }
 
-    public UserBook rateBook(User user, String isbn, int rating) {
+
+    public UserBookResponse rateBook(User user, String isbn, int rating) {
 
         if (rating < 1 || rating > 5) {
-            throw new IllegalArgumentException("Rating must be between 1 and 5");
+            throw new InvalidRatingException();
         }
 
         Book book = bookRepository.findByIsbn(isbn)
@@ -78,18 +79,22 @@ public class UserBookService {
 
         UserBook userBook = userBookRepository
                 .findByUserAndBook(user, book)
-                .orElseThrow(() -> new IllegalStateException("Book not in library"));
+                .orElseThrow(BookNotInLibraryException::new);
 
-        userBook = UserBook.builder()
-                .id(userBook.getId())
-                .user(user)
-                .book(book)
-                .status(userBook.getStatus())
-                .rating(rating)
-                .review(userBook.getReview())
-                .addedAt(userBook.getAddedAt())
-                .build();
+        userBook.setRating(rating);
 
-        return userBookRepository.save(userBook);
+        return toResponse(userBookRepository.save(userBook));
+    }
+
+
+    private UserBookResponse toResponse(UserBook userBook) {
+        return new UserBookResponse(
+                userBook.getBook().getIsbn(),
+                userBook.getBook().getTitle(),
+                userBook.getBook().getAuthor(),
+                userBook.getStatus(),
+                userBook.getRating(),
+                userBook.getAddedAt()
+        );
     }
 }

@@ -1,6 +1,6 @@
 package com.BlackFoxT.smartbook_backend.service;
 
-import com.BlackFoxT.smartbook_backend.exception.BookNotFoundException;
+import com.BlackFoxT.smartbook_backend.exception.*;
 import com.BlackFoxT.smartbook_backend.model.Book;
 import com.BlackFoxT.smartbook_backend.repository.BookRepository;
 import org.springframework.data.domain.Page;
