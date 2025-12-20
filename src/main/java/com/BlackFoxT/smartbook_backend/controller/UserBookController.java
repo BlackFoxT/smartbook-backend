@@ -1,9 +1,10 @@
 package com.BlackFoxT.smartbook_backend.controller;
 
 import com.BlackFoxT.smartbook_backend.dto.library.UserBookResponse;
-import com.BlackFoxT.smartbook_backend.model.User;
 import com.BlackFoxT.smartbook_backend.model.enums.ReadingStatus;
+import com.BlackFoxT.smartbook_backend.security.user.CustomUserDetails;
 import com.BlackFoxT.smartbook_backend.service.UserBookService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,37 +19,47 @@ public class UserBookController {
         this.userBookService = userBookService;
     }
 
-    private User mockUser() {
-        return User.builder()
-                .id(1L)
-                .username("demo")
-                .email("demo@mail.com")
-                .build();
-    }
-
     @GetMapping
-    public List<UserBookResponse> getMyLibrary() {
-        return userBookService.getUserLibrary(mockUser());
+    public List<UserBookResponse> getMyLibrary(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        return userBookService.getUserLibrary(userDetails.getUser());
     }
 
     @PostMapping("/{isbn}")
-    public UserBookResponse addBook(@PathVariable String isbn) {
-        return userBookService.addBookToLibrary(mockUser(), isbn);
+    public UserBookResponse addBook(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable String isbn
+    ) {
+        return userBookService.addBookToLibrary(
+                userDetails.getUser(),
+                isbn
+        );
     }
 
     @PutMapping("/{isbn}/status")
     public UserBookResponse updateStatus(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable String isbn,
             @RequestParam ReadingStatus status
     ) {
-        return userBookService.updateStatus(mockUser(), isbn, status);
+        return userBookService.updateStatus(
+                userDetails.getUser(),
+                isbn,
+                status
+        );
     }
 
     @PutMapping("/{isbn}/rating")
     public UserBookResponse rateBook(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable String isbn,
             @RequestParam int rating
     ) {
-        return userBookService.rateBook(mockUser(), isbn, rating);
+        return userBookService.rateBook(
+                userDetails.getUser(),
+                isbn,
+                rating
+        );
     }
 }

@@ -7,6 +7,7 @@ import com.BlackFoxT.smartbook_backend.exception.*;
 import com.BlackFoxT.smartbook_backend.model.User;
 import com.BlackFoxT.smartbook_backend.model.enums.Role;
 import com.BlackFoxT.smartbook_backend.repository.UserRepository;
+import com.BlackFoxT.smartbook_backend.security.jwt.JwtService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +16,14 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     public AuthServiceImpl(UserRepository userRepository,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder,
+                           JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -42,6 +46,7 @@ public class AuthServiceImpl implements AuthService {
         );
 
         userRepository.save(user);
+
         return new AuthResponse("User registered successfully");
     }
 
@@ -55,7 +60,11 @@ public class AuthServiceImpl implements AuthService {
             throw new InvalidCredentialsException();
         }
 
-        return new AuthResponse("Login successful");
-    }
+        String token = jwtService.generateToken(
+                user.getUsername(),
+                user.getRole().name()
+        );
 
+        return new AuthResponse("Login successful", token);
+    }
 }
