@@ -19,12 +19,13 @@ public class UserBookService {
     private final UserBookRepository userBookRepository;
     private final BookRepository bookRepository;
 
-    public UserBookService(UserBookRepository userBookRepository,
-                           BookRepository bookRepository) {
+    public UserBookService(
+            UserBookRepository userBookRepository,
+            BookRepository bookRepository
+    ) {
         this.userBookRepository = userBookRepository;
         this.bookRepository = bookRepository;
     }
-
 
     public List<UserBookResponse> getUserLibrary(User user) {
         return userBookRepository.findByUser(user)
@@ -33,9 +34,7 @@ public class UserBookService {
                 .collect(Collectors.toList());
     }
 
-
     public UserBookResponse addBookToLibrary(User user, String isbn) {
-
         Book book = bookRepository.findByIsbn(isbn)
                 .orElseThrow(() -> new BookNotFoundException(isbn));
 
@@ -52,9 +51,11 @@ public class UserBookService {
         return toResponse(userBookRepository.save(userBook));
     }
 
-
-    public UserBookResponse updateStatus(User user, String isbn, ReadingStatus status) {
-
+    public UserBookResponse updateStatus(
+            User user,
+            String isbn,
+            ReadingStatus status
+    ) {
         Book book = bookRepository.findByIsbn(isbn)
                 .orElseThrow(() -> new BookNotFoundException(isbn));
 
@@ -63,13 +64,10 @@ public class UserBookService {
                 .orElseThrow(BookNotInLibraryException::new);
 
         userBook.setStatus(status);
-
         return toResponse(userBookRepository.save(userBook));
     }
 
-
     public UserBookResponse rateBook(User user, String isbn, int rating) {
-
         if (rating < 1 || rating > 5) {
             throw new InvalidRatingException();
         }
@@ -82,10 +80,8 @@ public class UserBookService {
                 .orElseThrow(BookNotInLibraryException::new);
 
         userBook.setRating(rating);
-
         return toResponse(userBookRepository.save(userBook));
     }
-
 
     private UserBookResponse toResponse(UserBook userBook) {
         return new UserBookResponse(

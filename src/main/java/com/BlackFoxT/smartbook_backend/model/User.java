@@ -29,5 +29,9 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
 }
 
