@@ -1,9 +1,8 @@
 # 📚 SmartBook
 
-SmartBook is a backend REST API for managing a digital book catalog and personal user libraries.  
-Users can browse books, add them to their own library, track reading status, and rate books.
+SmartBook is a RESTful backend API for managing a digital book catalog and personal user libraries.
 
-This project is built to demonstrate clean backend architecture using Spring Boot.
+Users can browse books, maintain their own reading library, track reading status, rate books, while admins manage users and books.
 
 ---
 
@@ -12,14 +11,25 @@ This project is built to demonstrate clean backend architecture using Spring Boo
 ### 📖 Book Catalog
 - List all books
 - Filter by genre, author, or title
-- Sort and paginate results
-- Prevent duplicate book imports by ISBN
+- Pagination & sorting
+- Unique ISBN enforcement
 
 ### 👤 User Library
-- Add books to personal library
-- Track reading status (WANT_TO_READ, READING, READ)
+- Add/remove books from personal library
+- Track reading status (WANT_TO_READ, READING, COMPLETED)
 - Rate books (1–5)
-- Prevent duplicate books in user library
+- Prevent duplicate entries
+
+### 🛡️ Admin Panel
+- Create / update / delete books
+- Promote users to admin
+- Delete users (safe rules applied)
+- View any user's library
+- Dashboard statistics:
+    - Total users
+    - Total books
+    - Reading status distribution
+    - Average ratings
 
 ### ⚠️ Error Handling
 - Global exception handling
@@ -33,13 +43,14 @@ This project is built to demonstrate clean backend architecture using Spring Boo
 - Java 17
 - Spring Boot
 - Spring Data JPA
-- Spring Security (authentication in progress)
+- Spring Security (JWT)
 - MySQL
 - Hibernate
 - Lombok
 - Maven
 
 ---
+
 
 ## ⚙️ Getting Started
 
@@ -81,10 +92,26 @@ Application will start at: http://localhost:8080
 ### 📚 Books
 
 ```bash
-GET /api/books
-GET /api/books/{isbn}
+GET    /api/library
+POST   /api/library/{isbn}
+PUT    /api/library/{isbn}/status
+PUT    /api/library/{isbn}/rating
 ```
 
+### 🛡️ Admin
+
+```bash
+POST   /api/admin/books
+PUT    /api/admin/books/{isbn}
+DELETE /api/admin/books/{isbn}
+
+GET    /api/admin/users
+PUT    /api/admin/users/{id}/promote
+DELETE /api/admin/users/{id}
+GET    /api/admin/users/{id}/library
+
+GET    /api/admin/dashboard
+```
 ### 📘 User Library
 
 ```bash
