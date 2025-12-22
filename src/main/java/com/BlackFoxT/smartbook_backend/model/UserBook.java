@@ -13,10 +13,10 @@ import java.time.LocalDateTime;
                 @UniqueConstraint(columnNames = {"user_id", "book_id"})
         }
 )
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class UserBook {
 
@@ -25,11 +25,11 @@ public class UserBook {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "book_id")
+    @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
     @Enumerated(EnumType.STRING)
@@ -42,12 +42,13 @@ public class UserBook {
     @Column(length = 1000)
     private String review;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime addedAt;
 
     @PrePersist
-    void onCreate() {
+    protected void onCreate() {
         this.addedAt = LocalDateTime.now();
+
         if (this.status == null) {
             this.status = ReadingStatus.WANT_TO_READ;
         }

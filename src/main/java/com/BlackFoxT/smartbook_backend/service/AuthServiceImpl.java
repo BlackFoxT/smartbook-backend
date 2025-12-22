@@ -37,13 +37,13 @@ public class AuthServiceImpl implements AuthService {
             throw new UserAlreadyExistsException("Email");
         }
 
-        User user = new User(
-                null,
-                request.getUsername(),
-                request.getEmail(),
-                passwordEncoder.encode(request.getPassword()),
-                Role.USER
-        );
+        User user = User.builder()
+                .username(request.getUsername())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(Role.USER)
+                .build();
+
 
         userRepository.save(user);
 

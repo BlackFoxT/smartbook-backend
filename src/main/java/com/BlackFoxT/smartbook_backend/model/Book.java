@@ -3,6 +3,9 @@ package com.BlackFoxT.smartbook_backend.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(
         name = "books",
@@ -30,4 +33,12 @@ public class Book {
     private String author;
     private String genre;
     private Integer pages;
+
+    @OneToMany(
+            mappedBy = "book",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @Builder.Default
+    private List<UserBook> userBooks = new ArrayList<>();
 }
