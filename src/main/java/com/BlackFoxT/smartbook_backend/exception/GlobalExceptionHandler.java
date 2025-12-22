@@ -41,5 +41,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleInvalidCredentials(InvalidCredentialsException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
     }
+
+    @ExceptionHandler(AdminSelfDeleteException.class)
+    public ResponseEntity<String> handleAdminSelfDelete(AdminSelfDeleteException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(AdminDeleteForbiddenException.class)
+    public ResponseEntity<String> handleAdminDeleteForbidden(AdminDeleteForbiddenException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+    }
+
 }
 

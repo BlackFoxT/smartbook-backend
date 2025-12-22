@@ -2,6 +2,8 @@ package com.BlackFoxT.smartbook_backend.controller.admin;
 
 import com.BlackFoxT.smartbook_backend.dto.admin.AdminUserResponse;
 import com.BlackFoxT.smartbook_backend.dto.library.UserBookResponse;
+import com.BlackFoxT.smartbook_backend.exception.AdminDeleteForbiddenException;
+import com.BlackFoxT.smartbook_backend.exception.AdminSelfDeleteException;
 import com.BlackFoxT.smartbook_backend.exception.UserNotFoundException;
 import com.BlackFoxT.smartbook_backend.model.User;
 import com.BlackFoxT.smartbook_backend.model.enums.Role;
@@ -64,11 +66,11 @@ public class AdminUserController {
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
         if (admin.getId().equals(targetUser.getId())) {
-            throw new RuntimeException("Admin cannot delete himself");
+            throw new AdminSelfDeleteException();
         }
 
         if (targetUser.getRole() == Role.ADMIN) {
-            throw new RuntimeException("Cannot delete another admin");
+            throw new AdminDeleteForbiddenException();
         }
 
         userRepository.delete(targetUser);
