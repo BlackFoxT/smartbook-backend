@@ -92,10 +92,8 @@ Application will start at: http://localhost:8080
 ### 📚 Books
 
 ```bash
-GET    /api/library
-POST   /api/library/{isbn}
-PUT    /api/library/{isbn}/status
-PUT    /api/library/{isbn}/rating
+GET    /api/books
+GET   /api/books/{isbn}
 ```
 
 ### 🛡️ Admin
