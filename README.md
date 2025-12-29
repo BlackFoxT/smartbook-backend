@@ -92,7 +92,7 @@ Application will start at: http://localhost:8080
 ### 📚 Books
 
 ```bash
-GET    /api/books
+GET   /api/books
 GET   /api/books/{isbn}
 ```
 

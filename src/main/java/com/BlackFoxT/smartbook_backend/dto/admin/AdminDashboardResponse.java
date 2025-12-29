@@ -7,7 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public class AdminDashboardResponse {
 
-    private long totalUsers;    private long totalBooks;
+    private long totalUsers;
+    private long totalBooks;
     private long totalUserBooks;
 
     private long wantToReadCount;
