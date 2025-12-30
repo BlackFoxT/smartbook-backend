@@ -86,6 +86,20 @@ Application will start at: http://localhost:8080
 
 ---
 
+### 4️⃣ (Optional) Run the frontend application
+
+The frontend is a separate React project.
+
+```bash
+git clone https://github.com/BlackFoxT/smartbook-frontend.git
+cd smartbook-frontend
+npm install
+npm run dev
+```
+
+Frontend will start at: http://localhost:5173
+
+---
 
 ## 🔗 API Endpoints
 

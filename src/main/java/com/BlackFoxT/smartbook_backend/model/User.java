@@ -6,7 +6,6 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
@@ -32,6 +31,15 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    @Column(length = 50)
+    private String name;
+
+    @Column(length = 50)
+    private String surname;
+
+    @Column
+    private Integer age;
 
     @OneToMany(
             mappedBy = "user",

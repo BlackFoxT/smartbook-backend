@@ -67,6 +67,16 @@ public class UserBookService {
         return toResponse(userBookRepository.save(userBook));
     }
 
+    public void removeBookFromLibrary(User user, String isbn) {
+        Book book = bookRepository.findByIsbn(isbn)
+                .orElseThrow(() -> new BookNotFoundException(isbn));
+
+        UserBook userBook = userBookRepository
+                .findByUserAndBook(user, book)
+                .orElseThrow(BookNotInLibraryException::new);
+
+        userBookRepository.delete(userBook);
+    }
     public UserBookResponse rateBook(User user, String isbn, int rating) {
         if (rating < 1 || rating > 5) {
             throw new InvalidRatingException();

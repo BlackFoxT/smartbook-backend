@@ -62,4 +62,15 @@ public class UserBookController {
                 rating
         );
     }
+
+    @DeleteMapping("/{isbn}")
+    public void removeBook(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable String isbn
+    ) {
+        userBookService.removeBookFromLibrary(
+                userDetails.getUser(),
+                isbn
+        );
+    }
 }
